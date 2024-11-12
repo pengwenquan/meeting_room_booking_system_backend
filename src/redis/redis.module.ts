@@ -14,8 +14,12 @@ import { createClient } from 'redis';
             host: 'localhost',
             port: 6379,
           },
-          database: 1,
+          database: 0,
         });
+        await client.on('error', (err) =>
+          console.log('Redis Client Error', err),
+        );
+
         await client.connect();
         return client;
       },

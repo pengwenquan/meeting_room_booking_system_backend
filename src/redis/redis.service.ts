@@ -11,6 +11,7 @@ export class RedisService {
   }
 
   async set(key: string, value: string | number, ttl?: number) {
+    console.log('ket', key, value);
     await this.redisClient.set(key, value);
 
     if (ttl) {

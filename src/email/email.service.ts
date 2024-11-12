@@ -7,9 +7,9 @@ export class EmailService {
 
   constructor() {
     this.transporter = createTransport({
-      host: 'smtp.qq.com',
-      port: 9527,
-      secure: false,
+      service: 'qq',
+      port: 465,
+      secureConnection: true,
       auth: {
         user: '377944878@qq.com',
         pass: 'hvwyauborwebbgga',
