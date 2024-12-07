@@ -8,9 +8,9 @@ async function bootstrap() {
 
   app.useGlobalPipes(new ValidationPipe());
 
-  // const configService = app.get(ConfigService);
-  // console.log(configService.get('nest_server_port'));
+  const configService = app.get(ConfigService);
+  console.log(configService.get('nest_server_port'));
 
-  await app.listen(3000);
+  await app.listen(configService.get('nest_server_port'));
 }
 bootstrap();
