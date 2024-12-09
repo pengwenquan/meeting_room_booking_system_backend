@@ -15,6 +15,7 @@ import { Permission } from './entities/permission.entity';
 import { RedisService } from 'src/redis/redis.service';
 import { LoginUserDto } from './dto/login-user.dto';
 import { LoginUserVo } from './vo/login-user.vo';
+import { UserDetailVo } from './vo/user-info.vo';
 
 @Injectable()
 export class UserService {
@@ -131,6 +132,28 @@ export class UserService {
         return arr;
       }, []),
     };
+  }
+
+  async findUserDetailById(userId: number) {
+    const user = await this.userRepository.findOne({
+      where: {
+        id: userId,
+      },
+    });
+
+
+    const userVo = new UserDetailVo();
+
+    userVo.id = user.id;
+    userVo.email = user.email;
+    userVo.username = user.username;
+    userVo.headPic = user.headPic;
+    userVo.phoneNumber = user.phoneNumber;
+    userVo.nickName = user.nickName;
+    userVo.createTime = user.createTime;
+    userVo.isFrozen = user.isFrozen;
+
+    return userVo;
   }
 
   async initData() {
