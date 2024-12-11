@@ -7,6 +7,7 @@ import { LoginUserDto } from './dto/login-user.dto';
 import { JwtService } from '@nestjs/jwt/dist';
 import { ConfigService } from '@nestjs/config';
 import { RequireLogin, UserInfo } from 'src/custom.decorator';
+import { UpdateUserPasswordDto } from './dto/update-user-password';
 
 @Controller('user')
 export class UserController {
@@ -187,4 +188,26 @@ export class UserController {
   async info(@UserInfo('userId') userId: number) {
     return this.userService.findUserDetailById(userId);
   }
+
+  @Post(['update_password', 'admin/update_password'])
+  @RequireLogin()
+  async updatePassword(@UserInfo('userId') userId: number, @Body() passwordDto: UpdateUserPasswordDto) {
+      return this.userService.updatePassword(userId, passwordDto)
+  }
+
+  @Get('update_password/captcha')
+  async updatePasswordCaptcha(@Query('address') address: string) {
+    const code = Math.random().toString().slice(2, 8);
+
+    await this.redisService.set(`update_password_captcha_${address}`, code , 10 * 60);
+
+    await this.emailService.sendMail({
+      to: address,
+      subject: '更改密码验证码',
+      html: `<p>你的更改密码验证码是 ${code}</p>`
+    });
+
+    return '发送成功';
+  }
+
 }
