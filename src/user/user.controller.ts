@@ -201,11 +201,19 @@ export class UserController {
 
     await this.redisService.set(`update_password_captcha_${address}`, code , 10 * 60);
 
-    await this.emailService.sendMail({
-      to: address,
-      subject: '更改密码验证码',
-      html: `<p>你的更改密码验证码是 ${code}</p>`
-    });
+    console.log('code', code)
+
+    try{
+      await this.emailService.sendMail({
+        to: address,
+        subject: '更改密码验证码',
+        html: `<p>你的更改密码验证码是 ${code}</p>`
+      });
+    } catch(err) {
+      console.log('err', err)
+    };
+
+    console.log('code1', code)
 
     return '发送成功';
   }
