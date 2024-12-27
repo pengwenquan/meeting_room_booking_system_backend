@@ -9,11 +9,11 @@ export class EmailService {
     constructor() {
         this.transporter = createTransport({
             host: "smtp.qq.com",
-            port: 468,
+            port: 587,
             secure: false,
             auth: {
                 user: '377944878@qq.com',
-                pass: 'hvwyauborwebbgga'
+                pass: 'gkaxxiofvlwbbhjf'
             },
         });
     }

@@ -8,6 +8,8 @@ import { JwtService } from '@nestjs/jwt/dist';
 import { ConfigService } from '@nestjs/config';
 import { RequireLogin, UserInfo } from 'src/custom.decorator';
 import { UpdateUserPasswordDto } from './dto/update-user-password';
+import { UpdateUserDto } from './dto/update-user.dto';
+import { userInfo } from 'os';
 
 @Controller('user')
 export class UserController {
@@ -27,6 +29,7 @@ export class UserController {
 
   @Get('register-captcha')
   async captcha(@Query('address') address: string) {
+
     const code = Math.random().toString().slice(2, 8);
 
     await this.redisService.set(`captcha_${address}`, code, 5 * 60);
@@ -210,12 +213,33 @@ export class UserController {
         html: `<p>你的更改密码验证码是 ${code}</p>`
       });
     } catch(err) {
-      console.log('err', err)
+      return err;
     };
+  }
 
-    console.log('code1', code)
+  @Post(['update', 'admin/update'])
+  @RequireLogin()
+  async update(@UserInfo('userId') userId: number, @Body() updateUserInfo: UpdateUserDto) {
+    this.userService.update(userId, updateUserInfo)
+  }
 
-    return '发送成功';
+  @Get('update/captcha')
+  async updateCaptcha(@Query('address') address: string) {
+    const code = Math.random().toString().slice(2, 8);
+
+    await this.redisService.set(`update_user_captcha_${address}`, code , 10 * 60);
+
+    console.log('code', code)
+
+    try{
+      await this.emailService.sendMail({
+        to: address,
+        subject: '更改密码验证码',
+        html: `<p>你的更改密码验证码是 ${code}</p>`
+      });
+    } catch(err) {
+      return err;
+    };
   }
 
 }
