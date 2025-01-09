@@ -5,6 +5,7 @@ import { AppService } from './app.service';
 import { User } from './user/entities/user.entity';
 import { Role } from './user/entities/role.entity';
 import { Permission } from './user/entities/permission.entity';
+import { MeetingRoom } from './meeting-room/entities/meeting-room.entity';
 import { UserModule } from './user/user.module';
 import { RedisModule } from './redis/redis.module';
 import { EmailModule } from './email/email.module';
@@ -13,6 +14,7 @@ import { JwtModule } from '@nestjs/jwt';
 import { APP_GUARD } from '@nestjs/core';
 import { LoginGuard } from './login.guard';
 import { PermissionGuard } from './permission.guard';
+import { MeetingRoomModule } from './meeting-room/meeting-room.module';
 
 @Module({
   imports: [
@@ -26,7 +28,7 @@ import { PermissionGuard } from './permission.guard';
         return {
           secret: configService.get('jwt_secret'),
           signOptions: {
-            expiresIn: '30m'
+            expiresIn: '30m',
           },
         };
       },
@@ -43,7 +45,7 @@ import { PermissionGuard } from './permission.guard';
           database: 'meeting_room_booking_system',
           synchronize: true,
           logging: true,
-          entities: [User, Role, Permission],
+          entities: [User, Role, Permission, MeetingRoom],
           poolSize: 10,
           connectorPackage: 'mysql2',
           extra: {
@@ -56,18 +58,19 @@ import { PermissionGuard } from './permission.guard';
     UserModule,
     RedisModule,
     EmailModule,
+    MeetingRoomModule,
   ],
   controllers: [AppController],
   providers: [
     AppService,
     {
       provide: APP_GUARD,
-      useClass: LoginGuard
+      useClass: LoginGuard,
     },
     {
       provide: APP_GUARD,
-      useClass: PermissionGuard
-    }
+      useClass: PermissionGuard,
+    },
   ],
 })
 export class AppModule {}
