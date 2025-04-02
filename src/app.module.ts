@@ -6,6 +6,7 @@ import { User } from './user/entities/user.entity';
 import { Role } from './user/entities/role.entity';
 import { Permission } from './user/entities/permission.entity';
 import { MeetingRoom } from './meeting-room/entities/meeting-room.entity';
+import { Booking } from './booking/entities/booking.entity';
 import { UserModule } from './user/user.module';
 import { RedisModule } from './redis/redis.module';
 import { EmailModule } from './email/email.module';
@@ -15,6 +16,7 @@ import { APP_GUARD } from '@nestjs/core';
 import { LoginGuard } from './login.guard';
 import { PermissionGuard } from './permission.guard';
 import { MeetingRoomModule } from './meeting-room/meeting-room.module';
+import { BookingModule } from './booking/booking.module';
 
 @Module({
   imports: [
@@ -38,14 +40,14 @@ import { MeetingRoomModule } from './meeting-room/meeting-room.module';
       useFactory() {
         return {
           type: 'mysql',
-          host: 'localhost',
+          host: '127.0.0.1',
           port: 3306,
           username: 'root',
           password: 'my-secret-pw',
           database: 'meeting_room_booking_system',
           synchronize: true,
           logging: true,
-          entities: [User, Role, Permission, MeetingRoom],
+          entities: [User, Role, Permission, MeetingRoom, Booking],
           poolSize: 10,
           connectorPackage: 'mysql2',
           extra: {
@@ -59,6 +61,7 @@ import { MeetingRoomModule } from './meeting-room/meeting-room.module';
     RedisModule,
     EmailModule,
     MeetingRoomModule,
+    BookingModule,
   ],
   controllers: [AppController],
   providers: [

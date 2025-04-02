@@ -101,16 +101,9 @@ export class MeetingRoomService {
   }
 
   async delete(id: number) {
-    const bookings = await this.entityManager.findBy(Booking, {
-      room: {
-        id: id,
-      },
+    await this.repository.delete({
+      id,
     });
-
-    for (let i = 0; i < bookings.length; i++) {
-      this.entityManager.delete(Booking, bookings[i].id);
-    }
-    await this.repository.delete(id);
     return 'success';
   }
 }
